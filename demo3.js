@@ -1,16 +1,16 @@
 // Generate Sequencer Table
 var sequencer = [
-  ['', '', '', '', '@', '@', '@', '', '', '','', '', '', '', '', '', '', '', '', '','', '', '', '', '', '', '/', '/', '/'],
-  ['', '', '', '', '', '', '', '', '', '','', '', '', '', '', '', '', '', '', '','', '', '', '', '', '', '.', '.', '.'],
-  ['', '', '', '', '', '', '', '', '', '','', '', '', '', '/', '/', '/', '', '', '','', '', '', '', '', '', '.', '|', '.'],
-  ['', '', '', '', '', '', '', '', '', '','', '', '', '', '.', '.', '.', '', '', '','', '', '', '', '', '', '#', '#', '#'],
-  ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '.', '|', '.', '', '', '','', '', '', '#', '#', '', '', '', ''],
-  ['#', '#', '', '', '', '', '', '', '', '', '', '', '', '#', '#', '#', '#', '', '', '#','#', '', '', '', '', '', '', '', ''],
-  ['#', '#', '#', '#', '#', '', '', '', '', '', '', '', '#', '#', '#', '#', '', '', '', '','', '', '', '', '', '', '', '', ''],
-  ['#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
+  [' ', ' ', ' ', ' ', '@', '@', '@', ' ', ' ', ' ',' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',' ', ' ', ' ', ' ', ' ', ' ', '/', '/', '/'],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',' ', ' ', ' ', ' ', ' ', ' ', '.', '.', '.'],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',' ', ' ', ' ', ' ', '/', '/', '/', ' ', ' ', ' ',' ', ' ', ' ', ' ', ' ', ' ', '.', '|', '.'],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',' ', ' ', ' ', ' ', '.', '.', '.', ' ', ' ', ' ',' ', ' ', ' ', ' ', ' ', ' ', '#', '#', '#'],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '.', '|', '.', ' ', ' ', ' ',' ', ' ', ' ', '#', '#', ' ', ' ', ' ', ' '],
+  ['#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', '#', '#', '#', ' ', ' ', '#','#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  ['#', '#', '#', '#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', '#', '#', '#', ' ', ' ', ' ', ' ',' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  ['#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
 ];
    
-var table = document.getElementById('sequencer');
+var sequencerTable = document.getElementById('sequencer');
 
 function setTileClass(tile) {
   if (tile == '.') {
@@ -37,7 +37,7 @@ for (var y=0; y < sequencer.length; y++) {
     td.innerHTML = s[x];
     tr.appendChild(td);
   }
-  table.appendChild(tr);
+  sequencerTable.appendChild(tr);
 }
 
 // Get Tile Name & Type From Select
@@ -58,6 +58,7 @@ document.addEventListener('click', function(e) {
   if (e.srcElement.localName == 'td') {
     paint(target);
   }
+  makeAllTiles();
 }, false);
 
 function paint(tile) {
@@ -74,8 +75,8 @@ document.addEventListener('contextmenu', function(e) {
   if (e.srcElement.localName == 'td') {
     e.preventDefault();
     e.target.className = '';
-    e.target.setAttribute('data-tile-type', '');
-    e.target.innerHTML = '';
+    e.target.setAttribute('data-tile-type', ' ');
+    e.target.innerHTML = ' ';
 
   }
 }, false);
@@ -83,19 +84,19 @@ document.addEventListener('contextmenu', function(e) {
 
 // Harold Code
 
-textarea = document.createElement("textarea");
-textarea.rows = 10;
-textarea.cols = 30;
-textarea.value = `
-    @@@                   ///
-                          ...
-            ///           .|.
-            ...           ###
-            .|.        ##
-##         #####   ##
-#####     ####
-##############`
-textarea.onkeyup = makeAllTiles;
+//textarea = document.createElement("textarea");
+//textarea.rows = 10;
+//textarea.cols = 30;
+//textarea.value = `
+//    @@@                   ///
+//                          ...
+//            ///           .|.
+//            ...           ###
+//            .|.        ##
+//##         #####   ##
+//#####     ####
+//##############`
+//textarea.onkeyup = makeAllTiles;
 
 function loadFromHash() {
     try {
@@ -108,13 +109,25 @@ function loadFromHash() {
 }
 
 function makeTiles(symbol) {
-    location.hash = btoa(textarea.value);
-    var rows = textarea.value.split('\n').reverse();
-    console.log(rows
-            .map((row, i)=>row.split('').map((cell,j)=>cell===symbol?new Box(j*40, i*40, 40, 40):null))
-            .reduce((a,b) => a.concat(b))
-            .filter(a=>a));
+    //location.hash = btoa(textarea.value);
+    location.hash = btoa(rows);
 
+    //var rows = textarea.value.split('\n').reverse();
+    //console.log(rows)
+    //console.log(rows
+    //        .map((row, i)=>row.split('').map((cell,j)=>cell===symbol?new Box(j*40, i*40, 40, 40):null))
+    //        .reduce((a,b) => a.concat(b))
+    //        .filter(a=>a));
+    var rows = []
+    for (var y = 0; y < sequencerTable.rows.length; y++) {
+      var row = sequencerTable.rows[y];
+      var rowData = ''
+      for (var x = 0; x < row.cells.length; x++) {
+        rowData += row.cells[x].innerHTML;
+      }
+      rows.push(rowData)
+    }
+    rows = rows.reverse();
 
     return rows
             .map((row, i)=>row.split('').map((cell,j)=>cell===symbol?new Box(j*40, i*40, 40, 40):null))
@@ -148,12 +161,12 @@ function render() {
     scene.unlock();
 }
 
-scene = new Scene(300, 300);
+scene = new Scene(600, 300);
 player = new Platformer(100, 200, 30, 35);
 
 makeAllTiles();
 
-document.body.appendChild(textarea);
+//document.body.appendChild(textarea);
 render();
 window.setInterval(render, 1000/60);
 
