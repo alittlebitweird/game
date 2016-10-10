@@ -81,7 +81,9 @@ function insertColumn(rowNumber) {
 document.addEventListener('contextmenu', function(e) {
   e = e || window.event;
   var target = e.target || e.srcElement;
-  deleteColumn(target.cellIndex);
+  if (target.className.includes('insert-column')) {
+    deleteColumn(target.cellIndex);
+  }
 
 }, false);
 
