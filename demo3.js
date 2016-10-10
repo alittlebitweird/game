@@ -40,23 +40,40 @@ for (var y = 0; y < sequencer.length; y++) {
   sequencerTable.appendChild(tr);
 }
 
-function addInsertRow() {
+// Generate GUI
+
+function addGui() {
   sequencerTable.insertRow(0);
   var row = sequencerTable.rows[0]
-  for (x = 0; x < sequencerTable.rows[1].cells.length; x++) {
+  for (x = 0; x < sequencerTable.rows[1].cells.length + 1; x++) {
     var td = document.createElement('td');
-    td.innerHTML = '<';
+    td.innerHTML = '>';
     td.className = 'insert-column';
     sequencerTable.rows[0].appendChild(td);
   }
+  for (y = 1; y < sequencerTable.rows.length; y++) {
+    var td = document.createElement('td');
+    td.innerHTML = '^';
+    td.className = 'insert-row';
+    sequencerTable.rows[y].insertBefore(td, sequencerTable.rows[y].firstChild);
+  }
+  sequencerTable.insertRow(sequencerTable.rows.length);
+  var row = sequencerTable.rows[sequencerTable.rows.length - 1];
+  var td = document.createElement('td');
+  td.innerHTML = '^';
+  td.className = 'insert-row';
+  sequencerTable.rows[sequencerTable.rows.length - 1].appendChild(td);
 }
-addInsertRow();
+addGui();
 
-function removeInsertRow() {
+function removeGui() {
   sequencerTable.deleteRow(0);
+  for (y = 0; y < sequencerTable.rows.length; y++) {
+    sequencerTable.rows[y].deleteCell(0);
+  }
 }
 
-// Add column to table
+// Add Column to Table
 document.addEventListener('click', function(e) {
   e = e || window.event;
   var target = e.target || e.srcElement;
@@ -67,13 +84,13 @@ document.addEventListener('click', function(e) {
 }, false);
 
 function insertColumn(rowNumber) {
-  removeInsertRow();
+  removeGui();
   for (var y = 0; y < sequencer.length; y++) {
     row = sequencerTable.rows[y];
     row.insertCell(rowNumber);
     row.cells[rowNumber].innerHTML = ' ';
   }
-  addInsertRow();
+  addGui();
   makeAllTiles();
 }
 
@@ -82,20 +99,39 @@ document.addEventListener('contextmenu', function(e) {
   e = e || window.event;
   var target = e.target || e.srcElement;
   if (target.className.includes('insert-column')) {
-    removeInsertRow();
     deleteColumn(target.cellIndex);
-    addInsertRow();
   }
 
 }, false);
 
 function deleteColumn(rowNumber) {
+  removeGui();
   for (var y = 0; y < sequencer.length; y++) {
     row = sequencerTable.rows[y];
     row.deleteCell(rowNumber);
   }
   makeAllTiles();
+  addGui();
 }
+
+// Add Row to Table
+document.addEventListener('click', function(e) {
+  e = e || window.event;
+  var target = e.target || e.srcElement;
+  if (target.className.includes('insert-row')) {
+    rowNumber = target.parentNode.rowIndex;
+    sequencerTable.insertRow(rowNumber);
+    for (x = 1; x < sequencerTable.rows[(rowNumber + 1)].cells.length; x++) {
+      var td = document.createElement('td');
+      //if (x == 0) {
+      //  td.className = 'insert-row';
+      //  td.innerHTML = '^';
+      //}
+      sequencerTable.rows[(rowNumber)].appendChild(td);
+    }
+  }
+  makeAllTiles();
+}, false);
 
 // Get Tile Name & Type From Select
 function getTileNameAndTypeFromSelect() {
@@ -112,7 +148,7 @@ function getTileNameFromSelect() {
 document.addEventListener('click', function(e) {
   e = e || window.event;
   var target = e.target || e.srcElement;
-  if (e.srcElement.localName == 'td' && !target.className.includes('insert-column')) {
+  if (e.srcElement.localName == 'td' && !target.className.includes('insert-column') && !target.className.includes('insert-row')) {
     paint(target);
   }
   makeAllTiles();

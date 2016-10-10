@@ -73,7 +73,7 @@ nav .icon {
   background: coral;
 }
 
-.insert-column {
+.insert-column, .insert-row {
   color: #fff;
 }
 
