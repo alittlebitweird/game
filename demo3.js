@@ -82,7 +82,9 @@ document.addEventListener('contextmenu', function(e) {
   e = e || window.event;
   var target = e.target || e.srcElement;
   if (target.className.includes('insert-column')) {
+    removeInsertRow();
     deleteColumn(target.cellIndex);
+    addInsertRow();
   }
 
 }, false);
