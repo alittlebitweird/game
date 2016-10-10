@@ -84,8 +84,8 @@ document.addEventListener('contextmenu', function(e) {
 // Harold Code
 
 textarea = document.createElement("textarea");
-textarea.rows = 960;
-textarea.cols = 540;
+textarea.rows = 10;
+textarea.cols = 30;
 textarea.value = `
     @@@                   ///
                           ...

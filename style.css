@@ -1,7 +1,8 @@
 body {
     margin: 1em auto;
-    max-width: 40em;
-    font: 1.2em/1.62em sans-serif;
+    /*max-width: 40em; 
+    font: 1.2em/1.62em sans-serif; */
+    font-family: sans-serif;
     padding-left: 0.5em;
 }
 h1 {
@@ -57,10 +58,12 @@ nav .icon {
 #sequencer {
   background: #252525;
 }
+
 #sequencer td {
   height: 20px;
   width: 20px;
   text-align: center;
+  font-size: 20px sans-serif;
 }
 
 #sequencer td:hover {
