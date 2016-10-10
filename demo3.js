@@ -26,11 +26,11 @@ function setTileClass(tile) {
   }
 }
   
-for (var y=0; y < sequencer.length; y++) {
+for (var y = 0; y < sequencer.length; y++) {
   var tr = document.createElement('tr');
   var s = sequencer[y];
 
-  for (var x=0; x < s.length; x++) {
+  for (var x = 0; x < s.length; x++) {
     var td = document.createElement('td');
     td.setAttribute('data-tile-type', s[x]);
     setTileClass(s[x]);
@@ -38,6 +38,59 @@ for (var y=0; y < sequencer.length; y++) {
     tr.appendChild(td);
   }
   sequencerTable.appendChild(tr);
+}
+
+function addInsertRow() {
+  sequencerTable.insertRow(0);
+  var row = sequencerTable.rows[0]
+  for (x = 0; x < sequencerTable.rows[1].cells.length; x++) {
+    var td = document.createElement('td');
+    td.innerHTML = '<';
+    td.className = 'insert-column';
+    sequencerTable.rows[0].appendChild(td);
+  }
+}
+addInsertRow();
+
+function removeInsertRow() {
+  sequencerTable.deleteRow(0);
+}
+
+// Add column to table
+document.addEventListener('click', function(e) {
+  e = e || window.event;
+  var target = e.target || e.srcElement;
+  if (target.className.includes('insert-column')) {
+    insertColumn(target.cellIndex);
+  }
+
+}, false);
+
+function insertColumn(rowNumber) {
+  removeInsertRow();
+  for (var y = 0; y < sequencer.length; y++) {
+    row = sequencerTable.rows[y];
+    row.insertCell(rowNumber);
+    row.cells[rowNumber].innerHTML = ' ';
+  }
+  addInsertRow();
+  makeAllTiles();
+}
+
+// Remove column from table
+document.addEventListener('contextmenu', function(e) {
+  e = e || window.event;
+  var target = e.target || e.srcElement;
+  deleteColumn(target.cellIndex);
+
+}, false);
+
+function deleteColumn(rowNumber) {
+  for (var y = 0; y < sequencer.length; y++) {
+    row = sequencerTable.rows[y];
+    row.deleteCell(rowNumber);
+  }
+  makeAllTiles();
 }
 
 // Get Tile Name & Type From Select
@@ -55,7 +108,7 @@ function getTileNameFromSelect() {
 document.addEventListener('click', function(e) {
   e = e || window.event;
   var target = e.target || e.srcElement;
-  if (e.srcElement.localName == 'td') {
+  if (e.srcElement.localName == 'td' && !target.className.includes('insert-column')) {
     paint(target);
   }
   makeAllTiles();
@@ -83,7 +136,7 @@ document.addEventListener('contextmenu', function(e) {
 
 
 // Harold Code
-
+// Textarea generation
 //textarea = document.createElement("textarea");
 //textarea.rows = 10;
 //textarea.cols = 30;
@@ -99,66 +152,66 @@ document.addEventListener('contextmenu', function(e) {
 //textarea.onkeyup = makeAllTiles;
 
 function loadFromHash() {
-    try {
-        return atob(location.hash.slice(1))
-    } catch(error) {
-        console.log(error);
-        console.log(location.hash);
-        return ''
-    }
+  try {
+    return atob(location.hash.slice(1))
+  } catch(error) {
+    console.log(error);
+    console.log(location.hash);
+    return ''
+  }
 }
 
 function makeTiles(symbol) {
-    //location.hash = btoa(textarea.value);
-    location.hash = btoa(rows);
+  //location.hash = btoa(textarea.value);
+  location.hash = btoa(rows);
 
-    //var rows = textarea.value.split('\n').reverse();
-    //console.log(rows)
-    //console.log(rows
-    //        .map((row, i)=>row.split('').map((cell,j)=>cell===symbol?new Box(j*40, i*40, 40, 40):null))
-    //        .reduce((a,b) => a.concat(b))
-    //        .filter(a=>a));
-    var rows = []
-    for (var y = 0; y < sequencerTable.rows.length; y++) {
-      var row = sequencerTable.rows[y];
-      var rowData = ''
-      for (var x = 0; x < row.cells.length; x++) {
-        rowData += row.cells[x].innerHTML;
-      }
-      rows.push(rowData)
+  //var rows = textarea.value.split('\n').reverse();
+  //console.log(rows)
+  //console.log(rows
+  //        .map((row, i)=>row.split('').map((cell,j)=>cell===symbol?new Box(j*40, i*40, 40, 40):null))
+  //        .reduce((a,b) => a.concat(b))
+  //        .filter(a=>a));
+  var rows = []
+  for (var y = 0; y < sequencerTable.rows.length; y++) {
+    var row = sequencerTable.rows[y];
+    var rowData = ''
+    for (var x = 0; x < row.cells.length; x++) {
+      rowData += row.cells[x].innerHTML;
     }
-    rows = rows.reverse();
+    rows.push(rowData)
+  }
+  rows = rows.reverse();
 
-    return rows
-            .map((row, i)=>row.split('').map((cell,j)=>cell===symbol?new Box(j*40, i*40, 40, 40):null))
-            .reduce((a,b) => a.concat(b))
-            .filter(a=>a);
+  return rows
+          .map((row, i)=>row.split('').map((cell,j)=>cell===symbol?new Box(j*40, i*40, 40, 40):null))
+          .reduce((a,b) => a.concat(b))
+          .filter(a=>a);
 }
 
 function makeAllTiles() {
-    walls = makeTiles('.');
-    tiles = makeTiles('#');
-    doors = makeTiles('|');
-    roofs = makeTiles('/');
-    clouds = makeTiles('@');
+  walls = makeTiles('.');
+  tiles = makeTiles('#');
+  doors = makeTiles('|');
+  roofs = makeTiles('/');
+  clouds = makeTiles('@');
 }
 
 function render() {
-    scene.clear('lightblue');
+  scene.clear('lightblue');
 
-    scene.lock(player);
+  scene.lock(player);
 
-    scene.context.fillStyle = 'green';
-    tiles.forEach(tile=>tile.fill('green'));
-    walls.forEach(tile=>tile.fill('white'));
-    doors.forEach(tile=>tile.fill('brown'));
-    roofs.forEach(tile=>tile.fill('red'));
-    clouds.forEach(tile=>tile.fill('white'));
+  scene.context.fillStyle = 'green';
+  tiles.forEach(tile=>tile.fill('green'));
+  walls.forEach(tile=>tile.fill('white'));
+  doors.forEach(tile=>tile.fill('brown'));
+  roofs.forEach(tile=>tile.fill('red'));
+  clouds.forEach(tile=>tile.fill('white'));
 
-    player.resolve(tiles);
-    player.fill('steelblue');
+  player.resolve(tiles);
+  player.fill('steelblue');
 
-    scene.unlock();
+  scene.unlock();
 }
 
 scene = new Scene(600, 300);
