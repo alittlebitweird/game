@@ -1,0 +1,98 @@
+body {
+    margin: 1em auto;
+    max-width: 40em;
+    font: 1.2em/1.62em sans-serif;
+    padding-left: 0.5em;
+}
+h1 {
+    font-size: 1.2em;
+    line-height: 1.2em;
+    margin-bottom: 0em;
+}
+h2 {
+    font-size: 1.0em;
+}
+@media print {
+    body {
+        max-width: none
+    }
+}
+.square {
+    background-color: #eee;
+    border-radius: 10px;
+    display: inline-block;
+    text-align: center;
+    width: 120px;
+    margin: 1px;
+    padding: 25px 0px;
+    text-decoration: none;
+}
+.date, .tag {
+    font-size: 0.8em;
+}
+#container {
+    padding-right: 0.5em;
+    font: 16px/16px serif;
+}
+.codearea {
+    font-family: monospace;
+    max-width: 90%;
+    padding: 10px;
+    border: none;
+    background-color: #eee;
+    white-space: pre;
+    word-wrap: inherit;
+}
+.code {
+    font-size: 1.1em;
+    font-family: monospace;
+}
+nav .icon {
+    padding-right: 5px;
+    float: left;
+}
+
+/* Sequencer */
+
+#sequencer {
+  background: #252525;
+}
+#sequencer td {
+  height: 20px;
+  width: 20px;
+  text-align: center;
+}
+
+#sequencer td:hover {
+  cursor: pointer;
+  background: coral;
+}
+
+.clouds {
+  background: #fff;
+  color: #cecece;
+}
+
+.tiles {
+  background: green;
+  color: #13b513;
+}
+
+.doors {
+  background: #a52a2a;
+  color: #610d0d;
+}
+
+.walls {
+  background: white;
+  color: #cecece;
+}
+
+.roofs {
+  background: red;
+  color: #ab0808;
+}
+
+textarea {
+  max-width: 100%;
+}

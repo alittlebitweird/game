@@ -13,8 +13,8 @@ class Scene {
         this.context.translate(0, -h);
     }
 
-    clear() {
-        this.context.fillStyle = 'white';
+    clear(color) {
+        this.context.fillStyle = color||'white';
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
@@ -26,6 +26,16 @@ class Scene {
         }
     }
 
+    // camera
+    lock(target) {
+        this.x = Math.max(target.x-this.canvas.width/2, 0);
+        this.y = Math.max(target.y-this.canvas.height/2, 0);
+        scene.context.translate(-this.x, -this.y);
+    }
+
+    unlock() {
+        scene.context.translate(this.x, this.y);
+    }
 }
 
 class Box {
@@ -114,8 +124,8 @@ function sweptAABB(b2) {
         Y = b2.y - (b1.y + b1.h);
     }
 
-    var broadPhase = (x > 0 === X > 0) && (b1.vx === 0)
-                  || (y > 0 === Y > 0) && (b1.vy === 0);
+    var broadPhase = (x > 0 === X >= 0) && (b1.vx === 0)
+                  || (y > 0 === Y >= 0) && (b1.vy === 0);
 
     // TODO: 0/0 === NaN, 1/0 === Infinity
     var tx = b1.vx===0 ? -Infinity : x / b1.vx;
@@ -165,8 +175,8 @@ class Platformer extends Box {
         this.airLeft -= airUsed;
         this.setSpeed(vx, Math.max(-10, vy));
 
-        var collision = this.nextCollision(tiles);
-        if (collision.target) {
+        var collision = this.nextCollision(entities);
+        if (collision && collision.target) {
             // if hit the ground
             if (collision.normal.y === -1 && this.vy < 0) {
                 this.airLeft = 7;
@@ -175,11 +185,12 @@ class Platformer extends Box {
             this.move(collision.time);
             this.slide(collision.normal);
             // hit another wall after sliding
-            var anotherCollision = this.nextCollision(tiles);
+            var anotherCollision = this.nextCollision(entities);
             this.move(Math.min(1-collision.time, anotherCollision.time));
         } else {
             this.move(1);
         }
     }
-
 }
+
+
