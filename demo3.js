@@ -134,8 +134,8 @@ document.addEventListener('contextmenu', function(e) {
     e.target.className = '';
     e.target.setAttribute('data-tile-type', ' ');
     e.target.innerHTML = ' ';
-
   }
+  makeAllTiles();
 }, false);
 
 
