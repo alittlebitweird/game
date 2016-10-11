@@ -168,7 +168,7 @@ class Platformer extends Box {
     resolve(entities) {
         var vx = 0;
         var vy = (this.vy||0) - 1;
-        var airUsed = Math.max(Math.min(this.airLeft, 2), 0);
+        var airUsed = Math.max(Math.min(this.airLeft, 4), 0);
         if (this.pressed.has(37)) { vx -= 3; }
         if (this.pressed.has(39)) { vx += 3; }
         if (this.pressed.has(38)) { vy += this.airLeft; }
@@ -179,7 +179,7 @@ class Platformer extends Box {
         if (collision && collision.target) {
             // if hit the ground
             if (collision.normal.y === -1 && this.vy < 0) {
-                this.airLeft = 7;
+                this.airLeft = 7.5;
                 this.vy = 0;
             }
             this.move(collision.time);
